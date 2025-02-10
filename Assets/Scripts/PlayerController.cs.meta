@@ -1,2 +1,14 @@
 fileFormatVersion: 2
 guid: dcc89ba27128c6541abeffcf4c00717f
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - inputActions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  - idleSprite: {fileID: 21300000, guid: 84ce2f114ad12bd4ebafc77060220324, type: 3}
+  - crouchSprite: {fileID: 21300000, guid: 852ed71025819974eaee06b652ba82bb, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
