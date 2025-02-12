@@ -1,162 +1,159 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Windows;
 
 public class PlayerController : MonoBehaviour
 {
-    // “ü—Í
+    // å…¥åŠ›
     public InputActionAsset inputActions;
     public InputActionMap playerActionMap;
     public InputAction moveInput;
     public InputAction attackLKInput, attackMKInput, attackLPInput, attackMPInput;
 
-    // ƒXƒe[ƒ^ƒX
-    private bool isGrounded = true; // ’n–Ê‚ÉÚ’n‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©
+    // ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹
+    private bool isGrounded = true; // åœ°é¢ã«æ¥åœ°ã—ã¦ã„ã‚‹ã‹ã©ã†ã‹
+    private bool isLeftSide = true; // å·¦å´ã«ã„ã‚‹ã‹ã©ã†ã‹
+    private bool isAttacking = false; // æ”»æ’ƒä¸­ã‹ã©ã†ã‹
 
-    // •Ï”
+    // å¤‰æ•°
     private float speed = 5.0f;
-    private Animator playerAnim;
-
-    // ƒAƒjƒ[ƒVƒ‡ƒ“
-    public Sprite idleSprite, crouchSprite;
+    public FrameManager frameManager;
+    public AnimController animController;
+    public GameObject enemy, bullet;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        // ƒtƒŒ[ƒ€ƒŒ[ƒg‚Ìİ’è
-        Application.targetFrameRate = 60;
-        QualitySettings.vSyncCount = 0;
-        // Player‚ÌActionInput‚ğæ“¾
+        // Playerã®ActionInputã‚’å–å¾—
         playerActionMap = inputActions.FindActionMap("Player");
 
-        // Player‚ÌActionInput‚©‚çmoveInput‚ÆattackInput‚ğæ“¾
+        // Playerã®ActionInputã‹ã‚‰moveInputã¨attackInputã‚’å–å¾—
         moveInput = playerActionMap.FindAction("Move");
         attackLKInput = playerActionMap.FindAction("Attack_LK");
         attackMKInput = playerActionMap.FindAction("Attack_MK");
         attackLPInput = playerActionMap.FindAction("Attack_LP");
         attackMPInput = playerActionMap.FindAction("Attack_MP");
 
-        // ActionInput‚Ì—LŒø‰»
+        // ActionInputã®æœ‰åŠ¹åŒ–
         moveInput.Enable();
         attackLKInput.Enable();
         attackMKInput.Enable();
         attackLPInput.Enable();
         attackMPInput.Enable();
-
-        // ƒAƒjƒ[ƒVƒ‡ƒ“‚Ìİ’è
-        playerAnim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector2 move = moveInput.ReadValue<Vector2>();
+        // å…¥åŠ›ã‚’ãƒ†ãƒ³ã‚­ãƒ¼è¡¨ç¤º
+        int input = GetInput();
 
-        // ƒeƒ“ƒL[•\¦
-        int input = 0;
-        if(move.x > 0.5f)
+        // ç¡¬ç›´ä¸­ã§ãªã„
+        if (!isAttacking)
         {
-            if (move.y > 0.5f)
+            // 1P, 2Pã®åˆ¤å®šã¨ã‚­ãƒ£ãƒ©ã®å‘ãã‚’æ›´æ–°
+            if (enemy.transform.position.x < transform.position.x)
             {
-                input = 9;
-            }
-            else if (move.y < -0.5f)
-            {
-                input = 3;
+                isLeftSide = false;
             }
             else
             {
-                input = 6;
+                isLeftSide = true;
             }
-        }
-        else if (move.x < -0.5f)
-        {
-            if(move.y > 0.5f)
+
+            if ((isGrounded && isLeftSide && transform.localScale.x < 0) || (isGrounded && !isLeftSide && transform.localScale.x > 0))
             {
-                input = 7;
+                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
             }
-            else if (move.y < -0.5f)
+
+            // æ”»æ’ƒ
+            if (attackLKInput.triggered)
             {
-                input = 1;
+                Debug.Log("å¼±ã‚­ãƒƒã‚¯");
+                if (!isGrounded)
+                {
+                    animController.JumpAttack();
+                    JumpAttack();
+                }
             }
-            else
+            if (attackMKInput.triggered)
             {
-                input = 4;
+                if (!isGrounded)
+                {
+                    animController.JumpAttack();
+                    JumpAttack();
+                }
+                else
+                {
+                    animController.Attack_Cast();
+                    Attack_Cast();
+                }
             }
-        }
-        else
-        {
-            if (move.y > 0.5f)
+            if (attackLPInput.triggered)
             {
-                input = 8;
+                Debug.Log("å¼±ãƒ‘ãƒ³ãƒ");
+                if (!isGrounded)
+                {
+                    animController.JumpAttack();
+                    JumpAttack();
+                }
             }
-            else if (move.y < -0.5f)
+            if (attackMPInput.triggered)
             {
-                input = 2;
+                Debug.Log("ä¸­ãƒ‘ãƒ³ãƒ");
+                if (!isGrounded)
+                {
+                    animController.JumpAttack();
+                    JumpAttack();
+                }
             }
-            else
+
+            // æ”»æ’ƒä¸­ã§ãªã„å ´åˆ
+            if (!attackMPInput.triggered && !attackMKInput.triggered && !attackLPInput.triggered && !attackLKInput.triggered)
             {
-                input = 5;
+                // ã‚¸ãƒ£ãƒ³ãƒ—
+                if (isGrounded && (input == 7 || input == 8 || input == 9))
+                {
+                    animController.Jumping();
+                    Jumping(input);
+                }
+                // ã—ã‚ƒãŒã¿
+                else if (isGrounded && (input == 1 || input == 2 || input == 3))
+                {
+                    animController.Crouching();
+                    Crouching(input);
+                }
+                // ç«‹ã¡çŠ¶æ…‹
+                else if (isGrounded)
+                {
+                    // æ­©ã
+                    if (input == 4 || input == 6)
+                    {
+                        animController.Walking();
+                        Walking(input);
+                    }
+                    // ç›´ç«‹
+                    else
+                    {
+                        animController.Idleing();
+                    }
+
+                }
             }
         }
 
-        // UŒ‚
-        if (attackLKInput.triggered)
+        // ç¡¬ç›´è§£é™¤
+        if (frameManager.currentFrame >= frameManager.movableFrame)
         {
-            Debug.Log("ãƒLƒbƒN");
-            if (!isGrounded)
-            {
-                JumpAttack();
-            }
-        }
-        if(attackMKInput.triggered)
-        {
-            Debug.Log("’†ƒLƒbƒN");
-            if (!isGrounded)
-            {
-                JumpAttack();
-            }
-        }
-        if(attackLPInput.triggered)
-        {
-            Debug.Log("ãƒpƒ“ƒ`");
-            if (!isGrounded)
-            {
-                JumpAttack();
-            }
-        }
-        if (attackMPInput.triggered)
-        {
-            Debug.Log("’†ƒpƒ“ƒ`");
-            if (!isGrounded)
-            {
-                JumpAttack();
-            }
+            isAttacking = false;
+            animController.End_Cast();
         }
 
-        // ƒWƒƒƒ“ƒv
-        if (isGrounded && (input == 7 || input == 8 || input == 9))
+        // æ”»æ’ƒç™ºç”Ÿ(å¼¾)
+        if (frameManager.currentFrame == frameManager.startupFrame)
         {
-            Jumping(input);
-        }
-        // ‚µ‚á‚ª‚İ
-        else if (isGrounded && (input == 1 || input == 2 || input == 3))
-        {
-            Crouching(input);            
-        }
-        // —§‚¿ó‘Ô
-        else if(isGrounded)
-        {
-            // •à‚«
-            if (input == 4 || input == 6)
-            {
-                Walking(input);
-            }
-            // ’¼—§
-            else
-            {
-                Idleing();
-            }
-
+            Vector3 generatePos = transform.position + new Vector3(isLeftSide ? 1.5f : -1.5f, -1, 0);
+            Instantiate(bullet, generatePos, Quaternion.identity);
         }
     }
 
@@ -170,90 +167,126 @@ public class PlayerController : MonoBehaviour
 
     public void Walking(int input)
     {
-        // ƒAƒjƒ[ƒVƒ‡ƒ“XV
-        playerAnim.SetBool("isCrouching", false);
-        playerAnim.SetBool("isJumping", false);
-        playerAnim.SetBool("isJumpAttacking", false);
-        playerAnim.SetBool("isWalking", true);
-
-        // ˆÚ“®
+        // ç§»å‹•
         if (input == 6)
         {
             transform.Translate(new Vector3(speed, 0, 0) * Time.deltaTime);
         }
-        else if(input == 4)
+        else if (input == 4)
         {
             transform.Translate(new Vector3(-speed, 0, 0) * Time.deltaTime);
         }
-        
-    }
-    public void Idleing()
-    {
-        // ƒAƒjƒ[ƒVƒ‡ƒ“XV
-        playerAnim.SetBool("isCrouching", false);
-        playerAnim.SetBool("isJumping", false);
-        playerAnim.SetBool("isJumpAttacking", false);
-        playerAnim.SetBool("isWalking", false);
+
     }
     public void Crouching(int input)
     {
-        // ƒAƒjƒ[ƒVƒ‡ƒ“XV
-        playerAnim.SetBool("isWalking", false);
-        playerAnim.SetBool("isJumping", false);
-        playerAnim.SetBool("isJumpAttacking", false);
-        playerAnim.SetBool("isCrouching", true);
-
-        // ‘O‚µ‚á‚ª‚İ
+        // å‰ã—ã‚ƒãŒã¿
         if (input == 3)
         {
-            Debug.Log("‘O‚µ‚á‚ª‚İ");
+            Debug.Log("å‰ã—ã‚ƒãŒã¿");
         }
-        // Œã‚ë‚µ‚á‚ª‚İ
+        // å¾Œã‚ã—ã‚ƒãŒã¿
         else if (input == 1)
         {
-            Debug.Log("Œã‚ë‚µ‚á‚ª‚İ");
+            Debug.Log("å¾Œã‚ã—ã‚ƒãŒã¿");
         }
-        // ‚µ‚á‚ª‚İ
-        else if(input == 2)
+        // ã—ã‚ƒãŒã¿
+        else if (input == 2)
         {
-            Debug.Log("‚µ‚á‚ª‚İ");
+            Debug.Log("ã—ã‚ƒãŒã¿");
         }
     }
     public void Jumping(int input)
     {
-        // ƒAƒjƒ[ƒVƒ‡ƒ“XV
-        playerAnim.SetBool("isCrouching", false);
-        playerAnim.SetBool("isWalking", false);
-        playerAnim.SetBool("isJumpAttacking", false);
-        playerAnim.SetBool("isJumping", true);
-
-        // ‘OƒWƒƒƒ“ƒv
+        // å‰ã‚¸ãƒ£ãƒ³ãƒ—
         if (input == 9)
         {
             Rigidbody2D rb = GetComponent<Rigidbody2D>();
-            rb.AddForce(new Vector2(5, 12), ForceMode2D.Impulse);
+            rb.AddForce(new Vector2(5, 15), ForceMode2D.Impulse);
             isGrounded = false;
         }
-        // Œã‚ëƒWƒƒƒ“ƒv
+        // å¾Œã‚ã‚¸ãƒ£ãƒ³ãƒ—
         else if (input == 7)
         {
             Rigidbody2D rb = GetComponent<Rigidbody2D>();
-            rb.AddForce(new Vector2(-5, 12), ForceMode2D.Impulse);
+            rb.AddForce(new Vector2(-5, 15), ForceMode2D.Impulse);
             isGrounded = false;
         }
-        // ‚’¼ƒWƒƒƒ“ƒv
+        // å‚ç›´ã‚¸ãƒ£ãƒ³ãƒ—
         else if (input == 8)
         {
             Rigidbody2D rb = GetComponent<Rigidbody2D>();
-            rb.AddForce(new Vector2(0, 12), ForceMode2D.Impulse);
+            rb.AddForce(new Vector2(0, 15), ForceMode2D.Impulse);
             isGrounded = false;
         }
     }
     public void JumpAttack()
     {
-        // ƒAƒjƒ[ƒVƒ‡ƒ“XV
-        playerAnim.SetBool("isJumpAttacking", true);
+        // æ”»æ’ƒ
+    }
+    public void Attack_Cast()
+    {
+        int recovery = 50; // å…¨ä½“ãƒ•ãƒ¬ãƒ¼ãƒ (ç¡¬ç›´)
+        int startup = 40; // ç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ 
 
-        // UŒ‚
+        Debug.Log("é£›ã³é“å…·");
+        isAttacking = true;
+
+        frameManager.startupFrame = frameManager.currentFrame + startup;
+        frameManager.movableFrame = frameManager.currentFrame + recovery;
+    }
+
+    public int GetInput()
+    {
+        // å…¥åŠ›ã®å–å¾—
+        Vector2 move = moveInput.ReadValue<Vector2>();
+
+        int currentInput;
+        if (move.x > 0.5f)
+        {
+            if (move.y > 0.5f)
+            {
+                currentInput = 9;
+            }
+            else if (move.y < -0.5f)
+            {
+                currentInput = 3;
+            }
+            else
+            {
+                currentInput = 6;
+            }
+        }
+        else if (move.x < -0.5f)
+        {
+            if (move.y > 0.5f)
+            {
+                currentInput = 7;
+            }
+            else if (move.y < -0.5f)
+            {
+                currentInput = 1;
+            }
+            else
+            {
+                currentInput = 4;
+            }
+        }
+        else
+        {
+            if (move.y > 0.5f)
+            {
+                currentInput = 8;
+            }
+            else if (move.y < -0.5f)
+            {
+                currentInput = 2;
+            }
+            else
+            {
+                currentInput = 5;
+            }
+        }
+        return currentInput;
     }
 }
