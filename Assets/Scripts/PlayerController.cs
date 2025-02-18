@@ -11,15 +11,16 @@ public class PlayerController : MonoBehaviour
     public InputAction attackLKInput, attackMKInput, attackLPInput, attackMPInput;
 
     // ステータス
-    private bool isGrounded = true; // 地面に接地しているかどうか
-    private bool isLeftSide = true; // 左側にいるかどうか
-    private bool isAttacking = false; // 攻撃中かどうか
+
 
     // 変数
     private float speed = 5.0f;
+    public GameObject enemy, bullet;
+
+    // 他クラス
     public FrameManager frameManager;
     public AnimController animController;
-    public GameObject enemy, bullet;
+    public StateManager stateManager;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -49,19 +50,20 @@ public class PlayerController : MonoBehaviour
         int input = GetInput();
 
         // 硬直中でない
-        if (!isAttacking)
+        if (!stateManager.isAttacking)
         {
             // 1P, 2Pの判定とキャラの向きを更新
             if (enemy.transform.position.x < transform.position.x)
             {
-                isLeftSide = false;
+                stateManager.isLeftSide = false;
             }
             else
             {
-                isLeftSide = true;
+                stateManager.isLeftSide = true;
             }
 
-            if ((isGrounded && isLeftSide && transform.localScale.x < 0) || (isGrounded && !isLeftSide && transform.localScale.x > 0))
+            if ((stateManager.isGrounded && stateManager.isLeftSide && transform.localScale.x < 0) ||
+                (stateManager.isGrounded && !stateManager.isLeftSide && transform.localScale.x > 0))
             {
                 transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
             }
@@ -69,42 +71,57 @@ public class PlayerController : MonoBehaviour
             // 攻撃
             if (attackLKInput.triggered)
             {
-                Debug.Log("弱キック");
-                if (!isGrounded)
+                if (!stateManager.isGrounded)
                 {
-                    animController.JumpAttack();
-                    JumpAttack();
-                }
-            }
-            if (attackMKInput.triggered)
-            {
-                if (!isGrounded)
-                {
+                    stateManager.Attacking();
                     animController.JumpAttack();
                     JumpAttack();
                 }
                 else
                 {
-                    animController.Attack_Cast();
-                    Attack_Cast();
+                    Debug.Log("弱キック");
+                }
+            }
+            if (attackMKInput.triggered)
+            {
+                if (!stateManager.isGrounded)
+                {
+                    stateManager.Attacking();
+                    animController.JumpAttack();
+                    JumpAttack();
+                }
+                else
+                {
+                    stateManager.Attacking();
+                    animController.Attack_MK();
+                    Attack_MK();
+                    Debug.Log("中キック");
                 }
             }
             if (attackLPInput.triggered)
             {
-                Debug.Log("弱パンチ");
-                if (!isGrounded)
+                if (!stateManager.isGrounded)
                 {
+                    stateManager.Attacking();
                     animController.JumpAttack();
                     JumpAttack();
+                }
+                else
+                {
+                    Debug.Log("弱パンチ");
                 }
             }
             if (attackMPInput.triggered)
             {
-                Debug.Log("中パンチ");
-                if (!isGrounded)
+                if (!stateManager.isGrounded)
                 {
+                    stateManager.Attacking();
                     animController.JumpAttack();
                     JumpAttack();
+                }
+                else
+                {
+                    Debug.Log("中パンチ");
                 }
             }
 
@@ -112,30 +129,43 @@ public class PlayerController : MonoBehaviour
             if (!attackMPInput.triggered && !attackMKInput.triggered && !attackLPInput.triggered && !attackLKInput.triggered)
             {
                 // ジャンプ
-                if (isGrounded && (input == 7 || input == 8 || input == 9))
+                if (stateManager.isGrounded && (input == 7 || input == 8 || input == 9))
                 {
                     animController.Jumping();
+                    stateManager.Jumping();
                     Jumping(input);
                 }
                 // しゃがみ
-                else if (isGrounded && (input == 1 || input == 2 || input == 3))
+                else if (stateManager.isGrounded && (input == 1 || input == 2 || input == 3))
                 {
-                    animController.Crouching();
+                    if (!stateManager.isCrouching)
+                    {
+                        animController.Crouching();
+                        stateManager.Crouching();
+                    }
                     Crouching(input);
                 }
                 // 立ち状態
-                else if (isGrounded)
+                else if (stateManager.isGrounded)
                 {
                     // 歩き
                     if (input == 4 || input == 6)
                     {
-                        animController.Walking();
+                        if (!stateManager.isWalking)
+                        {
+                            animController.Walking();
+                            stateManager.Walking();
+                        }
                         Walking(input);
                     }
                     // 直立
                     else
                     {
-                        animController.Idleing();
+                        if (!stateManager.isIdleing)
+                        {
+                            animController.Idleing();
+                            stateManager.Idleing();
+                        }
                     }
 
                 }
@@ -145,14 +175,14 @@ public class PlayerController : MonoBehaviour
         // 硬直解除
         if (frameManager.currentFrame >= frameManager.movableFrame)
         {
-            isAttacking = false;
+            stateManager.isAttacking = false;
             animController.End_Cast();
         }
 
         // 攻撃発生(弾)
         if (frameManager.currentFrame == frameManager.startupFrame)
         {
-            Vector3 generatePos = transform.position + new Vector3(isLeftSide ? 1.5f : -1.5f, -1, 0);
+            Vector3 generatePos = transform.position + new Vector3(stateManager.isLeftSide ? 1.5f : -1.5f, -1, 0);
             Instantiate(bullet, generatePos, Quaternion.identity);
         }
     }
@@ -161,7 +191,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.tag == "Ground")
         {
-            isGrounded = true;
+            stateManager.isGrounded = true;
         }
     }
 
@@ -203,34 +233,30 @@ public class PlayerController : MonoBehaviour
         {
             Rigidbody2D rb = GetComponent<Rigidbody2D>();
             rb.AddForce(new Vector2(5, 15), ForceMode2D.Impulse);
-            isGrounded = false;
         }
         // 後ろジャンプ
         else if (input == 7)
         {
             Rigidbody2D rb = GetComponent<Rigidbody2D>();
             rb.AddForce(new Vector2(-5, 15), ForceMode2D.Impulse);
-            isGrounded = false;
         }
         // 垂直ジャンプ
         else if (input == 8)
         {
             Rigidbody2D rb = GetComponent<Rigidbody2D>();
             rb.AddForce(new Vector2(0, 15), ForceMode2D.Impulse);
-            isGrounded = false;
         }
     }
     public void JumpAttack()
     {
         // 攻撃
     }
-    public void Attack_Cast()
+    public void Attack_MK()
     {
         int recovery = 50; // 全体フレーム(硬直)
         int startup = 40; // 発生フレーム
 
         Debug.Log("飛び道具");
-        isAttacking = true;
 
         frameManager.startupFrame = frameManager.currentFrame + startup;
         frameManager.movableFrame = frameManager.currentFrame + recovery;
