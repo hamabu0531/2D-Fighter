@@ -4,7 +4,6 @@ using UnityEngine;
 public class AnimController : MonoBehaviour
 {
     public StateManager stateManager;
-    public Animator playerAnim;
     public SpriteRenderer playerSR;
     public Sprite[] playerSprites;
     public int[] framesPerSprite;
@@ -142,11 +141,6 @@ public class AnimController : MonoBehaviour
         }
         currentAnimation = StartCoroutine(ChangeAnimation(playerSprites, framesPerSprite, loop));
     }
-    public void End_Cast()
-    {
-        playerAnim.SetBool("isCasting", false);
-    }
-
 
     private IEnumerator ChangeAnimation(Sprite[] sprites, int[] framesPerSprite, bool loop)
     {

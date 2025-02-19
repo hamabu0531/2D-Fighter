@@ -3,8 +3,6 @@
 public class FrameManager : MonoBehaviour
 {
     public int currentFrame = 0; // 現在のフレーム
-    public int movableFrame = -1; // 動けるようになるフレーム(硬直の終わり)
-    public int startupFrame = -1; // 攻撃発生フレーム
 
     private void Awake()
     {

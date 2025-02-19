@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Windows;
 
@@ -141,8 +142,16 @@ public class PlayerController : MonoBehaviour
                     if (!stateManager.isCrouching)
                     {
                         animController.Crouching();
-                        stateManager.Crouching();
                     }
+                    if (stateManager.isLeftSide && input == 1 || !stateManager.isLeftSide && input == 3)
+                    {
+                        stateManager.Crouching(true);
+                    }
+                    else
+                    {
+                        stateManager.Crouching(false);
+                    }
+
                     Crouching(input);
                 }
                 // 立ち状態
@@ -154,9 +163,18 @@ public class PlayerController : MonoBehaviour
                         if (!stateManager.isWalking)
                         {
                             animController.Walking();
-                            stateManager.Walking();
                         }
                         Walking(input);
+
+                        // 後ろ歩き
+                        if (stateManager.isLeftSide && input == 4 || !stateManager.isLeftSide && input == 6)
+                        {
+                            stateManager.Walking(true);
+                        }
+                        else
+                        {
+                            stateManager.Walking(false);
+                        }
                     }
                     // 直立
                     else
@@ -171,25 +189,11 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
-
-        // 硬直解除
-        if (frameManager.currentFrame >= frameManager.movableFrame)
-        {
-            stateManager.isAttacking = false;
-            animController.End_Cast();
-        }
-
-        // 攻撃発生(弾)
-        if (frameManager.currentFrame == frameManager.startupFrame)
-        {
-            Vector3 generatePos = transform.position + new Vector3(stateManager.isLeftSide ? 1.5f : -1.5f, -1, 0);
-            Instantiate(bullet, generatePos, Quaternion.identity);
-        }
     }
 
     public void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Ground")
+        if (collision.gameObject.CompareTag("Ground"))
         {
             stateManager.isGrounded = true;
         }
@@ -206,7 +210,6 @@ public class PlayerController : MonoBehaviour
         {
             transform.Translate(new Vector3(-speed, 0, 0) * Time.deltaTime);
         }
-
     }
     public void Crouching(int input)
     {
@@ -249,20 +252,85 @@ public class PlayerController : MonoBehaviour
     }
     public void JumpAttack()
     {
-        // 攻撃
+        int recovery = 3; // 着地後の硬直
+        int startup = 15; // 発生フレーム
+
+        stateManager.Attacking();
+
+        Debug.Log("ジャンプ攻撃");
+
+        StartCoroutine(JumpAttack_Coroutine(recovery, startup));
     }
+    private IEnumerator JumpAttack_Coroutine(int recovery, int startup)
+    {
+        int i = 1;
+        // 発生フレームまで待機
+        while (i < startup)
+        {
+            // 発生前に着地した場合
+            if (stateManager.isGrounded)
+            {
+                break;
+            }
+
+            i++;
+            yield return null; // 1フレーム待機
+        }
+
+        // 攻撃判定
+
+        // 硬直終了まで待機
+        i = 1;
+        while (!stateManager.isGrounded)
+        {
+            yield return null; // 1フレーム待機
+        }
+        while (i < recovery)
+        {
+            i++;
+            yield return null; // 1フレーム待機
+        }
+
+        // 硬直解除
+        stateManager.isAttacking = false;
+    }
+
     public void Attack_MK()
     {
         int recovery = 50; // 全体フレーム(硬直)
         int startup = 40; // 発生フレーム
 
-        Debug.Log("飛び道具");
+        Debug.Log("中キック");
 
-        frameManager.startupFrame = frameManager.currentFrame + startup;
-        frameManager.movableFrame = frameManager.currentFrame + recovery;
+        StartCoroutine(MK_Coroutine(recovery, startup));
     }
 
-    public int GetInput()
+    private IEnumerator MK_Coroutine(int recovery, int startup)
+    {
+        int i = 1;
+        // 発生フレームまで待機
+        while (i< startup)
+        {
+            i++;
+            yield return null; // 1フレーム待機
+        }
+
+        // 攻撃判定
+        Vector3 generatePos = transform.position + new Vector3(stateManager.isLeftSide ? 1.5f : -1.5f, -1, 0);
+        GameObject bul = Instantiate(bullet, generatePos, Quaternion.identity, this.transform);
+
+        // 硬直終了まで待機
+        while (i < recovery)
+        {
+            i++;
+            yield return null; // 1フレーム待機
+        }
+
+        // 硬直解除
+        stateManager.isAttacking = false;
+    }
+
+public int GetInput()
     {
         // 入力の取得
         Vector2 move = moveInput.ReadValue<Vector2>();

@@ -1,13 +1,16 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class StateManager : MonoBehaviour
 {
-    public bool isGrounded = true; // ’n–Ê‚ÉÚ’n‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©
-    public bool isLeftSide = true; // ¶‘¤‚É‚¢‚é‚©‚Ç‚¤‚©
-    public bool isAttacking = false; // UŒ‚’†‚©‚Ç‚¤‚©
-    public bool isIdleing = false; // ƒAƒCƒhƒ‹ó‘Ô‚©‚Ç‚¤‚©
-    public bool isWalking = false; // •àsó‘Ô‚©‚Ç‚¤‚©
-    public bool isCrouching = false; // ‚µ‚á‚ª‚İó‘Ô‚©‚Ç‚¤‚©
+    public bool isGrounded = true; // åœ°é¢ã«æ¥åœ°ã—ã¦ã„ã‚‹ã‹ã©ã†ã‹
+    public bool isLeftSide = true; // å·¦å´ã«ã„ã‚‹ã‹ã©ã†ã‹
+    public bool isAttacking = false; // æ”»æ’ƒä¸­ã‹ã©ã†ã‹
+    public bool isIdleing = false; // ã‚¢ã‚¤ãƒ‰ãƒ«çŠ¶æ…‹ã‹ã©ã†ã‹
+    public bool isWalking = false; // æ­©è¡ŒçŠ¶æ…‹ã‹ã©ã†ã‹
+    public bool isCrouching = false; // ã—ã‚ƒãŒã¿çŠ¶æ…‹ã‹ã©ã†ã‹
+    public bool isGuarding = false; // é˜²å¾¡çŠ¶æ…‹ã‹ã©ã†ã‹
+
+    public int HP = 100;
 
 
     public void Idleing()
@@ -15,20 +18,23 @@ public class StateManager : MonoBehaviour
         isIdleing = true;
         isWalking = false;
         isCrouching = false;
-    }
+        isGuarding = false;
+}
 
-    public void Walking()
+    public void Walking(bool guard)
     {
         isIdleing = false;
         isWalking = true;
         isCrouching = false;
+        isGuarding = guard;
     }
 
-    public void Crouching()
+    public void Crouching(bool guard)
     {
         isIdleing = false;
         isWalking = false;
         isCrouching = true;
+        isGuarding = guard;
     }
 
     public void Jumping()
@@ -37,6 +43,7 @@ public class StateManager : MonoBehaviour
         isWalking = false;
         isCrouching = false;
         isGrounded = false;
+        isGuarding = false;
     }
 
     public void Attacking()
@@ -45,5 +52,6 @@ public class StateManager : MonoBehaviour
         isWalking = false;
         isCrouching = false;
         isAttacking = true;
+        isGuarding = false;
     }
 }
