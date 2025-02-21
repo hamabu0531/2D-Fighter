@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Windows;
@@ -9,9 +10,7 @@ public class PlayerController : MonoBehaviour
     public InputActionAsset inputActions;
     public InputActionMap playerActionMap;
     public InputAction moveInput;
-    public InputAction attackLKInput, attackMKInput, attackLPInput, attackMPInput;
-
-    // ステータス
+    public InputAction attackLKInput, attackMKInput, attackLPInput, attackMPInput, attackHPInput, attackHKInput;
 
 
     // 変数
@@ -22,6 +21,7 @@ public class PlayerController : MonoBehaviour
     public FrameManager frameManager;
     public AnimController animController;
     public StateManager stateManager;
+    public AttackManager attackManager;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -35,6 +35,8 @@ public class PlayerController : MonoBehaviour
         attackMKInput = playerActionMap.FindAction("Attack_MK");
         attackLPInput = playerActionMap.FindAction("Attack_LP");
         attackMPInput = playerActionMap.FindAction("Attack_MP");
+        attackHPInput = playerActionMap.FindAction("Attack_HP");
+        attackHKInput = playerActionMap.FindAction("Attack_HK");
 
         // ActionInputの有効化
         moveInput.Enable();
@@ -42,6 +44,8 @@ public class PlayerController : MonoBehaviour
         attackMKInput.Enable();
         attackLPInput.Enable();
         attackMPInput.Enable();
+        attackHPInput.Enable();
+        attackHKInput.Enable();
     }
 
     // Update is called once per frame
@@ -69,123 +73,154 @@ public class PlayerController : MonoBehaviour
                 transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
             }
 
-            // 攻撃
-            if (attackLKInput.triggered)
+            // パリィ中でない場合
+            if (!stateManager.isParrying)
             {
-                if (!stateManager.isGrounded)
+                // 攻撃
+                if (attackLKInput.triggered)
                 {
-                    stateManager.Attacking();
-                    animController.JumpAttack();
-                    JumpAttack();
-                }
-                else
-                {
-                    Debug.Log("弱キック");
-                }
-            }
-            if (attackMKInput.triggered)
-            {
-                if (!stateManager.isGrounded)
-                {
-                    stateManager.Attacking();
-                    animController.JumpAttack();
-                    JumpAttack();
-                }
-                else
-                {
-                    stateManager.Attacking();
-                    animController.Attack_MK();
-                    Attack_MK();
-                    Debug.Log("中キック");
-                }
-            }
-            if (attackLPInput.triggered)
-            {
-                if (!stateManager.isGrounded)
-                {
-                    stateManager.Attacking();
-                    animController.JumpAttack();
-                    JumpAttack();
-                }
-                else
-                {
-                    Debug.Log("弱パンチ");
-                }
-            }
-            if (attackMPInput.triggered)
-            {
-                if (!stateManager.isGrounded)
-                {
-                    stateManager.Attacking();
-                    animController.JumpAttack();
-                    JumpAttack();
-                }
-                else
-                {
-                    Debug.Log("中パンチ");
-                }
-            }
-
-            // 攻撃中でない場合
-            if (!attackMPInput.triggered && !attackMKInput.triggered && !attackLPInput.triggered && !attackLKInput.triggered)
-            {
-                // ジャンプ
-                if (stateManager.isGrounded && (input == 7 || input == 8 || input == 9))
-                {
-                    animController.Jumping();
-                    stateManager.Jumping();
-                    Jumping(input);
-                }
-                // しゃがみ
-                else if (stateManager.isGrounded && (input == 1 || input == 2 || input == 3))
-                {
-                    if (!stateManager.isCrouching)
+                    if (!stateManager.isGrounded)
                     {
-                        animController.Crouching();
-                    }
-                    if (stateManager.isLeftSide && input == 1 || !stateManager.isLeftSide && input == 3)
-                    {
-                        stateManager.Crouching(true);
+                        stateManager.Attacking();
+                        animController.JumpAttack();
+                        attackManager.JumpAttack();
                     }
                     else
                     {
-                        stateManager.Crouching(false);
+                        Debug.Log("弱キック");
                     }
-
-                    Crouching(input);
                 }
-                // 立ち状態
-                else if (stateManager.isGrounded)
+                if (attackMKInput.triggered)
                 {
-                    // 歩き
-                    if (input == 4 || input == 6)
+                    if (!stateManager.isGrounded)
                     {
-                        if (!stateManager.isWalking)
-                        {
-                            animController.Walking();
-                        }
-                        Walking(input);
+                        stateManager.Attacking();
+                        animController.JumpAttack();
+                        attackManager.JumpAttack();
+                    }
+                    else
+                    {
+                        stateManager.Attacking();
+                        animController.Attack_MK();
+                        attackManager.Attack_MK();
+                    }
+                }
+                if (attackLPInput.triggered)
+                {
+                    if (!stateManager.isGrounded)
+                    {
+                        stateManager.Attacking();
+                        animController.JumpAttack();
+                        attackManager.JumpAttack();
+                    }
+                    else
+                    {
+                        stateManager.Attacking();
+                        animController.Attack_LP();
+                        attackManager.Attack_LP();
+                    }
+                }
+                if (attackMPInput.triggered)
+                {
+                    if (!stateManager.isGrounded)
+                    {
+                        stateManager.Attacking();
+                        animController.JumpAttack();
+                        attackManager.JumpAttack();
+                    }
+                    else
+                    {
+                        stateManager.Attacking();
+                        animController.Attack_MP();
+                        attackManager.Attack_MP();
+                    }
+                }
+                if (attackHPInput.triggered)
+                {
+                    if (!stateManager.isGrounded)
+                    {
+                        stateManager.Attacking();
+                        animController.JumpAttack();
+                        attackManager.JumpAttack();
+                    }
+                    else
+                    {
+                        Debug.Log("Parry!");
+                        stateManager.Parrying();
+                        animController.Parrying(); // 今は仮にHPにParryを設定
+                        return;
+                    }
+                }
 
-                        // 後ろ歩き
-                        if (stateManager.isLeftSide && input == 4 || !stateManager.isLeftSide && input == 6)
+                // 攻撃中でない場合
+                if (!attackMPInput.triggered && !attackMKInput.triggered && !attackLPInput.triggered && !attackLKInput.triggered)
+                {
+                    // ジャンプ
+                    if (stateManager.isGrounded && (input == 7 || input == 8 || input == 9))
+                    {
+                        animController.Jumping();
+                        stateManager.Jumping();
+                        Jumping(input);
+                    }
+                    // しゃがみ
+                    else if (stateManager.isGrounded && (input == 1 || input == 2 || input == 3))
+                    {
+                        if (!stateManager.isCrouching)
                         {
-                            stateManager.Walking(true);
+                            animController.Crouching();
+                        }
+                        if (stateManager.isLeftSide && input == 1 || !stateManager.isLeftSide && input == 3)
+                        {
+                            stateManager.Crouching(true);
                         }
                         else
                         {
-                            stateManager.Walking(false);
+                            stateManager.Crouching(false);
                         }
-                    }
-                    // 直立
-                    else
-                    {
-                        if (!stateManager.isIdleing)
-                        {
-                            animController.Idleing();
-                            stateManager.Idleing();
-                        }
-                    }
 
+                        Crouching(input);
+                    }
+                    // 立ち状態
+                    else if (stateManager.isGrounded)
+                    {
+                        // 歩き
+                        if (input == 4 || input == 6)
+                        {
+                            if (!stateManager.isWalking)
+                            {
+                                animController.Walking();
+                            }
+                            Walking(input);
+
+                            // 後ろ歩き
+                            if (stateManager.isLeftSide && input == 4 || !stateManager.isLeftSide && input == 6)
+                            {
+                                stateManager.Walking(true);
+                            }
+                            else
+                            {
+                                stateManager.Walking(false);
+                            }
+                        }
+                        // 直立
+                        else
+                        {
+                            if (!stateManager.isIdleing)
+                            {
+                                animController.Idleing();
+                                stateManager.Idleing();
+                            }
+                        }
+
+                    }
+                }
+            }
+            else
+            {
+                if (attackHPInput.ReadValue<float>() == 0)
+                {
+                    stateManager.Idleing();
+                    animController.Idleing();
                 }
             }
         }
@@ -250,87 +285,9 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(new Vector2(0, 15), ForceMode2D.Impulse);
         }
     }
-    public void JumpAttack()
-    {
-        int recovery = 3; // 着地後の硬直
-        int startup = 15; // 発生フレーム
+   
 
-        stateManager.Attacking();
-
-        Debug.Log("ジャンプ攻撃");
-
-        StartCoroutine(JumpAttack_Coroutine(recovery, startup));
-    }
-    private IEnumerator JumpAttack_Coroutine(int recovery, int startup)
-    {
-        int i = 1;
-        // 発生フレームまで待機
-        while (i < startup)
-        {
-            // 発生前に着地した場合
-            if (stateManager.isGrounded)
-            {
-                break;
-            }
-
-            i++;
-            yield return null; // 1フレーム待機
-        }
-
-        // 攻撃判定
-
-        // 硬直終了まで待機
-        i = 1;
-        while (!stateManager.isGrounded)
-        {
-            yield return null; // 1フレーム待機
-        }
-        while (i < recovery)
-        {
-            i++;
-            yield return null; // 1フレーム待機
-        }
-
-        // 硬直解除
-        stateManager.isAttacking = false;
-    }
-
-    public void Attack_MK()
-    {
-        int recovery = 50; // 全体フレーム(硬直)
-        int startup = 40; // 発生フレーム
-
-        Debug.Log("中キック");
-
-        StartCoroutine(MK_Coroutine(recovery, startup));
-    }
-
-    private IEnumerator MK_Coroutine(int recovery, int startup)
-    {
-        int i = 1;
-        // 発生フレームまで待機
-        while (i< startup)
-        {
-            i++;
-            yield return null; // 1フレーム待機
-        }
-
-        // 攻撃判定
-        Vector3 generatePos = transform.position + new Vector3(stateManager.isLeftSide ? 1.5f : -1.5f, -1, 0);
-        GameObject bul = Instantiate(bullet, generatePos, Quaternion.identity, this.transform);
-
-        // 硬直終了まで待機
-        while (i < recovery)
-        {
-            i++;
-            yield return null; // 1フレーム待機
-        }
-
-        // 硬直解除
-        stateManager.isAttacking = false;
-    }
-
-public int GetInput()
+    public int GetInput()
     {
         // 入力の取得
         Vector2 move = moveInput.ReadValue<Vector2>();

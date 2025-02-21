@@ -6,7 +6,8 @@ public class BulletController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        isLeftSide = transform.parent.GetChild(1).GetComponent<StateManager>().isLeftSide;
+        isLeftSide = transform.parent.parent.GetChild(1).GetComponent<StateManager>().isLeftSide;
+        this.transform.SetParent(null);
     }
 
     // Update is called once per frame

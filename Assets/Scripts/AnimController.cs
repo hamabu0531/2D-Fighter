@@ -97,10 +97,26 @@ public class AnimController : MonoBehaviour
         }
         currentAnimation = StartCoroutine(ChangeAnimation(playerSprites, framesPerSprite, loop));
     }
-    public void JumpAttack()
+
+    public void Parrying()
     {
         // playerSpritesを設定
-        playerSprites = Resources.LoadAll<Sprite>("Sprites/JumpAttack");
+        playerSprites = Resources.LoadAll<Sprite>("Sprites/Parrying");
+
+        // アニメーション更新
+        if (currentAnimation != null)
+        {
+            StopCoroutine(currentAnimation);
+        }
+        playerSR.sprite = playerSprites[0];
+    }
+
+    // 弱パンチ
+
+    public void Attack_LP()
+    {
+        // playerSpritesを設定
+        playerSprites = Resources.LoadAll<Sprite>("Sprites/Attack_LP");
 
         // ループ
         loop = false;
@@ -109,7 +125,7 @@ public class AnimController : MonoBehaviour
         framesPerSprite = new int[playerSprites.Length];
         for (int i = 0; i < playerSprites.Length; i++)
         {
-            framesPerSprite[i] = 5; // ここを個別にJSONで指定
+            framesPerSprite[i] = 4;// ここを個別にJSONで指定
         }
 
         // アニメーション更新
@@ -119,6 +135,33 @@ public class AnimController : MonoBehaviour
         }
         currentAnimation = StartCoroutine(ChangeAnimation(playerSprites, framesPerSprite, loop));
     }
+
+    // 中パンチ
+
+    public void Attack_MP()
+    {
+        // playerSpritesを設定
+        playerSprites = Resources.LoadAll<Sprite>("Sprites/Attack_MP");
+
+        // ループ
+        loop = false;
+
+        // framesPerSpriteを設定
+        framesPerSprite = new int[playerSprites.Length];
+        for (int i = 0; i < playerSprites.Length; i++)
+        {
+            framesPerSprite[i] = 3;// ここを個別にJSONで指定
+        }
+
+        // アニメーション更新
+        if (currentAnimation != null)
+        {
+            StopCoroutine(currentAnimation);
+        }
+        currentAnimation = StartCoroutine(ChangeAnimation(playerSprites, framesPerSprite, loop));
+    }
+
+    // 中キック
     public void Attack_MK()
     {
         // playerSpritesを設定
@@ -132,6 +175,30 @@ public class AnimController : MonoBehaviour
         for (int i = 0; i < playerSprites.Length; i++)
         {
             framesPerSprite[i] = 10;// ここを個別にJSONで指定
+        }
+
+        // アニメーション更新
+        if (currentAnimation != null)
+        {
+            StopCoroutine(currentAnimation);
+        }
+        currentAnimation = StartCoroutine(ChangeAnimation(playerSprites, framesPerSprite, loop));
+    }
+
+    // ジャンプ攻撃
+    public void JumpAttack()
+    {
+        // playerSpritesを設定
+        playerSprites = Resources.LoadAll<Sprite>("Sprites/JumpAttack");
+
+        // ループ
+        loop = false;
+
+        // framesPerSpriteを設定
+        framesPerSprite = new int[playerSprites.Length];
+        for (int i = 0; i < playerSprites.Length; i++)
+        {
+            framesPerSprite[i] = 5; // ここを個別にJSONで指定
         }
 
         // アニメーション更新

@@ -9,6 +9,7 @@ public class StateManager : MonoBehaviour
     public bool isWalking = false; // 歩行状態かどうか
     public bool isCrouching = false; // しゃがみ状態かどうか
     public bool isGuarding = false; // 防御状態かどうか
+    public bool isParrying = false; // 受け流し状態かどうか
 
     public int HP = 100;
 
@@ -19,7 +20,8 @@ public class StateManager : MonoBehaviour
         isWalking = false;
         isCrouching = false;
         isGuarding = false;
-}
+        isParrying = false;
+    }
 
     public void Walking(bool guard)
     {
@@ -27,6 +29,7 @@ public class StateManager : MonoBehaviour
         isWalking = true;
         isCrouching = false;
         isGuarding = guard;
+        isParrying = false;
     }
 
     public void Crouching(bool guard)
@@ -35,6 +38,7 @@ public class StateManager : MonoBehaviour
         isWalking = false;
         isCrouching = true;
         isGuarding = guard;
+        isParrying = false;
     }
 
     public void Jumping()
@@ -44,6 +48,7 @@ public class StateManager : MonoBehaviour
         isCrouching = false;
         isGrounded = false;
         isGuarding = false;
+        isParrying = false;
     }
 
     public void Attacking()
@@ -53,5 +58,16 @@ public class StateManager : MonoBehaviour
         isCrouching = false;
         isAttacking = true;
         isGuarding = false;
+        isParrying = false;
+    }
+
+    public void Parrying()
+    {
+        isIdleing = false;
+        isWalking = false;
+        isCrouching = false;
+        isAttacking = false;
+        isGuarding = false;
+        isParrying = true;
     }
 }
