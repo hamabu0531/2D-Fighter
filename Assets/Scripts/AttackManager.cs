@@ -6,6 +6,7 @@ public class AttackManager : MonoBehaviour
     public StateManager stateManager;
 
     public GameObject bullet;
+    public GameObject attackBox_LP, attackBox_MP;
 
     // ãƒpƒ“ƒ`
     public void Attack_LP()
@@ -29,6 +30,7 @@ public class AttackManager : MonoBehaviour
         }
 
         // UŒ‚”»’è
+        attackBox_LP.SetActive(true);
 
         // d’¼I—¹‚Ü‚Å‘Ò‹@
         while (i < recovery)
@@ -36,6 +38,9 @@ public class AttackManager : MonoBehaviour
             i++;
             yield return null; // 1ƒtƒŒ[ƒ€‘Ò‹@
         }
+
+        // UŒ‚”»’èI—¹
+        attackBox_LP.SetActive(false);
 
         // d’¼‰ğœ
         stateManager.isAttacking = false;
@@ -63,6 +68,7 @@ public class AttackManager : MonoBehaviour
         }
 
         // UŒ‚”»’è
+        attackBox_MP.SetActive(true);
 
         // d’¼I—¹‚Ü‚Å‘Ò‹@
         while (i < recovery)
@@ -70,6 +76,9 @@ public class AttackManager : MonoBehaviour
             i++;
             yield return null; // 1ƒtƒŒ[ƒ€‘Ò‹@
         }
+
+        // UŒ‚”»’èI—¹
+        attackBox_MP.SetActive(false);
 
         // d’¼‰ğœ
         stateManager.isAttacking = false;
@@ -97,7 +106,7 @@ public class AttackManager : MonoBehaviour
         }
 
         // UŒ‚”»’è
-        Vector3 generatePos = transform.position + new Vector3(stateManager.isLeftSide ? 1.5f : -1.5f, -1, 0);
+        Vector3 generatePos = transform.position + new Vector3(stateManager.isLeftSide ? 1.8f : -1.8f, -1, 0);
         GameObject bul = Instantiate(bullet, generatePos, Quaternion.identity, this.transform);
 
         // d’¼I—¹‚Ü‚Å‘Ò‹@

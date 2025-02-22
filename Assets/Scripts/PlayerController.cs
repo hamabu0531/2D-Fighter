@@ -135,21 +135,23 @@ public class PlayerController : MonoBehaviour
                         attackManager.Attack_MP();
                     }
                 }
-                if (attackHPInput.triggered)
+
+                // HPにパリィを割り当てているためコメントアウト
+                //if (attackHPInput.triggered)
+                //{
+                //    if (!stateManager.isGrounded)
+                //    {
+                //        stateManager.Attacking();
+                //        animController.JumpAttack();
+                //        attackManager.JumpAttack();
+                //    }
+                //}
+                if (attackHPInput.ReadValue<float>() > 0 && stateManager.isGrounded)
                 {
-                    if (!stateManager.isGrounded)
-                    {
-                        stateManager.Attacking();
-                        animController.JumpAttack();
-                        attackManager.JumpAttack();
-                    }
-                    else
-                    {
-                        Debug.Log("Parry!");
-                        stateManager.Parrying();
-                        animController.Parrying(); // 今は仮にHPにParryを設定
-                        return;
-                    }
+                    Debug.Log("Parry!");
+                    stateManager.Parrying();
+                    animController.Parrying(); // 今は仮にHPにParryを設定
+                    return;
                 }
 
                 // 攻撃中でない場合
