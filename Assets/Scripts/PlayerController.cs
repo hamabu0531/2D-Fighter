@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     public InputActionAsset inputActions;
     public InputActionMap playerActionMap;
     public InputAction moveInput;
-    public InputAction attackLKInput, attackMKInput, attackLPInput, attackMPInput, attackHPInput, attackHKInput;
+    public InputAction attackLKInput, attackMKInput, attackLPInput, attackMPInput, attackHPInput, attackHKInput, parryInput;
 
 
     // 変数
@@ -37,6 +37,7 @@ public class PlayerController : MonoBehaviour
         attackMPInput = playerActionMap.FindAction("Attack_MP");
         attackHPInput = playerActionMap.FindAction("Attack_HP");
         attackHKInput = playerActionMap.FindAction("Attack_HK");
+        parryInput = playerActionMap.FindAction("Parry");
 
         // ActionInputの有効化
         moveInput.Enable();
@@ -46,6 +47,7 @@ public class PlayerController : MonoBehaviour
         attackMPInput.Enable();
         attackHPInput.Enable();
         attackHKInput.Enable();
+        parryInput.Enable();
     }
 
     // Update is called once per frame
@@ -135,20 +137,18 @@ public class PlayerController : MonoBehaviour
                         attackManager.Attack_MP();
                     }
                 }
-
-                // HPにパリィを割り当てているためコメントアウト
-                //if (attackHPInput.triggered)
-                //{
-                //    if (!stateManager.isGrounded)
-                //    {
-                //        stateManager.Attacking();
-                //        animController.JumpAttack();
-                //        attackManager.JumpAttack();
-                //    }
-                //}
-                if (attackHPInput.ReadValue<float>() > 0 && stateManager.isGrounded)
+                if (attackHPInput.triggered)
                 {
-                    Debug.Log("Parry!");
+                    if (!stateManager.isGrounded)
+                    {
+                        stateManager.Attacking();
+                        animController.JumpAttack();
+                        attackManager.JumpAttack();
+                    }
+                }
+                if (parryInput.ReadValue<float>() > 0 && stateManager.isGrounded)
+                {
+                    Debug.Log("Parrying!");
                     stateManager.Parrying();
                     animController.Parrying(); // 今は仮にHPにParryを設定
                     return;
@@ -219,7 +219,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                if (attackHPInput.ReadValue<float>() == 0)
+                if (parryInput.ReadValue<float>() == 0)
                 {
                     stateManager.Idleing();
                     animController.Idleing();
