@@ -57,6 +57,10 @@ public class BulletController : MonoBehaviour
                 stateManager2.HP -= damage;
             }
         }
+        else if(collision.gameObject.CompareTag("Bullet"))
+        {
+            Debug.Log("‹Ê“¯Žm‚Ì‘ŠŽE");
+        }
         Destroy(gameObject);
     }
 }

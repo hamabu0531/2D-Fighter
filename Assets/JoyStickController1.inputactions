@@ -1,5 +1,5 @@
 {
-    "name": "JoyStickControll",
+    "name": "JoyStickController1",
     "maps": [
         {
             "name": "Player",
@@ -13,24 +13,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
-                },
-                {
-                    "name": "Attack_MK",
-                    "type": "Button",
-                    "id": "32050612-8202-470e-9671-257d52a5911f",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Attack_LK",
-                    "type": "Button",
-                    "id": "58387119-e17f-4e70-8e3d-e7fc95916927",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 },
                 {
                     "name": "Attack_LP",
@@ -54,6 +36,24 @@
                     "name": "Attack_HP",
                     "type": "Button",
                     "id": "0e55ed28-645a-4ff3-a8d6-5c3656944535",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Attack_LK",
+                    "type": "Button",
+                    "id": "58387119-e17f-4e70-8e3d-e7fc95916927",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Attack_MK",
+                    "type": "Button",
+                    "id": "32050612-8202-470e-9671-257d52a5911f",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
