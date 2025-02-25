@@ -9,8 +9,8 @@ public class CanvasManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        hP_Bar1 = transform.GetChild(0).GetComponent<Slider>();
-        hP_Bar2 = transform.GetChild(1).GetComponent<Slider>();
+        hP_Bar1 = GameObject.Find("HP_Bar1").GetComponent<Slider>();
+        hP_Bar2 = GameObject.Find("HP_Bar2").GetComponent<Slider>();
     }
 
     // Update is called once per frame
