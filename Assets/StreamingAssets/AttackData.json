@@ -1,0 +1,60 @@
+{
+    "attacks": [
+        {
+            "key": "LP",
+            "attackInfo": {
+                "startup": 4,
+                "recovery": 12,
+                "transitionFrames": 4
+            }
+        },
+        {
+            "key": "MP",
+            "attackInfo": {
+                "startup": 6,
+                "recovery": 20,
+                "transitionFrames": 3
+            }
+        },
+        {
+            "key": "HP",
+            "attackInfo": {
+                "startup": 8,
+                "recovery": 30,
+                "transitionFrames": 2
+            }
+        },
+        {
+            "key": "LK",
+            "attackInfo": {
+                "startup": 10,
+                "recovery": 40,
+                "transitionFrames": 1
+            }
+        },
+        {
+            "key": "MK",
+            "attackInfo": {
+                "startup": 40,
+                "recovery": 50,
+                "transitionFrames": 10
+            }
+        },
+        {
+            "key": "HK",
+            "attackInfo": {
+                "startup": 60,
+                "recovery": 70,
+                "transitionFrames": 20
+            }
+        },
+        {
+            "key": "JumpAttack",
+            "attackInfo": {
+                "startup": 15,
+                "recovery": 3,
+                "transitionFrames": 5
+            }
+        }
+    ]
+}

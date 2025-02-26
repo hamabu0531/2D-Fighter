@@ -2,9 +2,14 @@ using UnityEngine;
 
 public class AttackBoxManager : MonoBehaviour
 {
-    public StateManager stateManager1, stateManager2;
     public int damage;
+    private StateManager stateManager1, stateManager2;
 
+    public void Start()
+    {
+        stateManager1 = GameObject.Find("Player1").transform.Find("StateManager").GetComponent<StateManager>();
+        stateManager2 = GameObject.Find("Player2").transform.Find("StateManager").GetComponent<StateManager>();
+    }
     public void OnEnable()
     {
         this.gameObject.GetComponent<Collider2D>().enabled = false;

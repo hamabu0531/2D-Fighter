@@ -1,18 +1,30 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class AttackManager : MonoBehaviour
 {
     public StateManager stateManager;
+    private JsonDB jsonDB;
 
     public GameObject bullet;
     public GameObject attackBox_LP, attackBox_MP;
 
+    private Dictionary<string, AttackInfo> attackData;
+
+    private void Start()
+    {
+        jsonDB = GameObject.Find("JsonDB").GetComponent<JsonDB>();
+        attackData = jsonDB.jsonData;
+    }
+
     // 弱パンチ
     public void Attack_LP()
     {
-        int recovery = 12; // 全体フレーム(硬直)
-        int startup = 4; // 発生フレーム
+        if(attackData == null || !attackData.ContainsKey("LP")) return;
+
+        int recovery = attackData["LP"].recovery; // 全体フレーム(硬直)
+        int startup = attackData["LP"].startup; // 発生フレーム
 
         Debug.Log("弱パンチ");
 
@@ -49,8 +61,10 @@ public class AttackManager : MonoBehaviour
     // 中パンチ
     public void Attack_MP()
     {
-        int recovery = 20; // 全体フレーム(硬直)
-        int startup = 6; // 発生フレーム
+        if (attackData == null || !attackData.ContainsKey("MP")) return;
+
+        int recovery = attackData["MP"].recovery; // 全体フレーム(硬直)
+        int startup = attackData["MP"].startup; // 発生フレーム
 
         Debug.Log("中パンチ");
 
@@ -87,8 +101,10 @@ public class AttackManager : MonoBehaviour
     // 中キック
     public void Attack_MK()
     {
-        int recovery = 50; // 全体フレーム(硬直)
-        int startup = 40; // 発生フレーム
+        //if (attackData == null || !attackData.ContainsKey("MK")) return;
+
+        int recovery = attackData["MK"].recovery; // 全体フレーム(硬直)
+        int startup = attackData["MK"].startup; // 発生フレーム
 
         Debug.Log("中キック");
 
@@ -123,8 +139,10 @@ public class AttackManager : MonoBehaviour
     // ジャンプ攻撃
     public void JumpAttack()
     {
-        int recovery = 3; // 着地後の硬直
-        int startup = 15; // 発生フレーム
+        if (attackData == null || !attackData.ContainsKey("JumpAttack")) return;
+
+        int recovery = attackData["JumpAttack"].recovery; // 着地後の硬直
+        int startup = attackData["JumpAttack"].startup; // 発生フレーム
 
         stateManager.Attacking();
 

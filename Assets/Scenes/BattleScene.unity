@@ -349,8 +349,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e870c75213dcf934da47aace3fd9edd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stateManager1: {fileID: 1178482628}
-  stateManager2: {fileID: 2007938369}
   damage: 3
 --- !u!61 &216841784
 BoxCollider2D:
@@ -859,8 +857,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e870c75213dcf934da47aace3fd9edd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stateManager1: {fileID: 1178482628}
-  stateManager2: {fileID: 2007938369}
   damage: 3
 --- !u!1 &519420028
 GameObject:
@@ -1416,7 +1412,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 3
+  m_GravityScale: 4
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -1521,7 +1517,6 @@ MonoBehaviour:
     m_Flags: 0
   enemy: {fileID: 1715775757}
   bullet: {fileID: 6620532022522804417, guid: 4bfb007f631890d478c69f041e20dd77, type: 3}
-  frameManager: {fileID: 1758188652}
   animController: {fileID: 1801928780}
   stateManager: {fileID: 2007938369}
   attackManager: {fileID: 341235986}
@@ -1599,6 +1594,50 @@ Transform:
   - {fileID: 27504337}
   - {fileID: 1939690993}
   - {fileID: 581512439}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &856709416
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 856709418}
+  - component: {fileID: 856709417}
+  m_Layer: 0
+  m_Name: JsonDB
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &856709417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 856709416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc4ecbbf5b719f74d9bed5d70cefa08d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &856709418
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 856709416}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &961256229
@@ -1773,8 +1812,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e870c75213dcf934da47aace3fd9edd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stateManager1: {fileID: 1178482628}
-  stateManager2: {fileID: 2007938369}
   damage: 10
 --- !u!1 &1082176747
 GameObject:
@@ -2855,8 +2892,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78a00aa1b93bbd4489954b56d3ed2e15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stateManager1: {fileID: 1178482628}
-  stateManager2: {fileID: 2007938369}
 --- !u!1 &1616475401
 GameObject:
   m_ObjectHideFlags: 0
@@ -3258,7 +3293,6 @@ MonoBehaviour:
     m_Flags: 0
   enemy: {fileID: 835009773}
   bullet: {fileID: 6620532022522804417, guid: 4bfb007f631890d478c69f041e20dd77, type: 3}
-  frameManager: {fileID: 1758188652}
   animController: {fileID: 53925644}
   stateManager: {fileID: 1178482628}
   attackManager: {fileID: 961256231}
@@ -3277,7 +3311,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 3
+  m_GravityScale: 4
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -3300,7 +3334,7 @@ GameObject:
   - component: {fileID: 1758188653}
   - component: {fileID: 1758188652}
   m_Layer: 0
-  m_Name: FrameManager
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3318,6 +3352,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b26013aaabfde3b469412034a5b68c0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roundTime: 99
+  remainFrame: 0
   currentFrame: 0
 --- !u!4 &1758188653
 Transform:
@@ -3800,8 +3836,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e870c75213dcf934da47aace3fd9edd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stateManager1: {fileID: 1178482628}
-  stateManager2: {fileID: 2007938369}
   damage: 10
 --- !u!61 &2008188208
 BoxCollider2D:
@@ -4079,3 +4113,4 @@ SceneRoots:
   - {fileID: 1758188653}
   - {fileID: 1502318326}
   - {fileID: 1422925012}
+  - {fileID: 856709418}

@@ -18,7 +18,6 @@ public class PlayerController : MonoBehaviour
     public GameObject enemy, bullet;
 
     // 他クラス
-    public FrameManager frameManager;
     public AnimController animController;
     public StateManager stateManager;
     public AttackManager attackManager;
@@ -272,19 +271,19 @@ public class PlayerController : MonoBehaviour
         if (input == 9)
         {
             Rigidbody2D rb = GetComponent<Rigidbody2D>();
-            rb.AddForce(new Vector2(5, 15), ForceMode2D.Impulse);
+            rb.AddForce(new Vector2(5, 20), ForceMode2D.Impulse);
         }
         // 後ろジャンプ
         else if (input == 7)
         {
             Rigidbody2D rb = GetComponent<Rigidbody2D>();
-            rb.AddForce(new Vector2(-5, 15), ForceMode2D.Impulse);
+            rb.AddForce(new Vector2(-5, 20), ForceMode2D.Impulse);
         }
         // 垂直ジャンプ
         else if (input == 8)
         {
             Rigidbody2D rb = GetComponent<Rigidbody2D>();
-            rb.AddForce(new Vector2(0, 15), ForceMode2D.Impulse);
+            rb.AddForce(new Vector2(0, 20), ForceMode2D.Impulse);
         }
     }
    

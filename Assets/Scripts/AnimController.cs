@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AnimController : MonoBehaviour
@@ -8,7 +9,13 @@ public class AnimController : MonoBehaviour
     public Sprite[] playerSprites;
     public int[] framesPerSprite;
     private bool loop; // アニメーションのループ
+    private Dictionary<string, AttackInfo> jsonData;
     private Coroutine currentAnimation;
+
+    private void Start()
+    {
+        jsonData = GameObject.Find("JsonDB").GetComponent<JsonDB>().jsonData;
+    }
 
     public void Idleing()
     {
@@ -125,7 +132,7 @@ public class AnimController : MonoBehaviour
         framesPerSprite = new int[playerSprites.Length];
         for (int i = 0; i < playerSprites.Length; i++)
         {
-            framesPerSprite[i] = 4;// ここを個別にJSONで指定
+            framesPerSprite[i] = jsonData["LP"].transitionFrames;// ここを個別にJSONで指定
         }
 
         // アニメーション更新
@@ -150,7 +157,7 @@ public class AnimController : MonoBehaviour
         framesPerSprite = new int[playerSprites.Length];
         for (int i = 0; i < playerSprites.Length; i++)
         {
-            framesPerSprite[i] = 3;// ここを個別にJSONで指定
+            framesPerSprite[i] = jsonData["MP"].transitionFrames;// ここを個別にJSONで指定
         }
 
         // アニメーション更新
@@ -174,7 +181,7 @@ public class AnimController : MonoBehaviour
         framesPerSprite = new int[playerSprites.Length];
         for (int i = 0; i < playerSprites.Length; i++)
         {
-            framesPerSprite[i] = 10;// ここを個別にJSONで指定
+            framesPerSprite[i] = jsonData["MK"].transitionFrames;// ここを個別にJSONで指定
         }
 
         // アニメーション更新
@@ -198,7 +205,7 @@ public class AnimController : MonoBehaviour
         framesPerSprite = new int[playerSprites.Length];
         for (int i = 0; i < playerSprites.Length; i++)
         {
-            framesPerSprite[i] = 5; // ここを個別にJSONで指定
+            framesPerSprite[i] = jsonData["JumpAttack"].transitionFrames; // ここを個別にJSONで指定
         }
 
         // アニメーション更新
