@@ -8,7 +8,7 @@ public class AttackManager : MonoBehaviour
     private JsonDB jsonDB;
 
     public GameObject bullet;
-    public GameObject attackBox_LP, attackBox_MP;
+    public GameObject attackBox_LP, attackBox_MP, attackBox_HP;
 
     private Dictionary<string, AttackInfo> attackData;
 
@@ -93,6 +93,45 @@ public class AttackManager : MonoBehaviour
 
         // 攻撃判定終了
         attackBox_MP.SetActive(false);
+
+        // 硬直解除
+        stateManager.isAttacking = false;
+    }
+
+    // 強パンチ
+    public void Attack_HP()
+    {
+        if (attackData == null || !attackData.ContainsKey("HP")) return;
+
+        int recovery = attackData["HP"].recovery; // 全体フレーム(硬直)
+        int startup = attackData["HP"].startup; // 発生フレーム
+
+        Debug.Log("強パンチ");
+
+        StartCoroutine(HP_Coroutine(recovery, startup));
+    }
+
+    private IEnumerator HP_Coroutine(int recovery, int startup)
+    {
+        int i = 1;
+        // 発生フレームまで待機
+        while (i < startup)
+        {
+            i++;
+            yield return null; // 1フレーム待機
+        }
+        // 攻撃判定
+        attackBox_HP.SetActive(true);
+
+        // 硬直終了まで待機
+        while (i < recovery)
+        {
+            i++;
+            yield return null; // 1フレーム待機
+        }
+
+        // 攻撃判定終了
+        attackBox_HP.SetActive(false);
 
         // 硬直解除
         stateManager.isAttacking = false;

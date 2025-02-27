@@ -85,10 +85,12 @@ public class PlayerController : MonoBehaviour
                         stateManager.Attacking();
                         animController.JumpAttack();
                         attackManager.JumpAttack();
+                        return;
                     }
                     else
                     {
                         Debug.Log("弱キック");
+                        return;
                     }
                 }
                 if (attackMKInput.triggered)
@@ -98,12 +100,14 @@ public class PlayerController : MonoBehaviour
                         stateManager.Attacking();
                         animController.JumpAttack();
                         attackManager.JumpAttack();
+                        return;
                     }
                     else
                     {
                         stateManager.Attacking();
                         animController.Attack_MK();
                         attackManager.Attack_MK();
+                        return;
                     }
                 }
                 if (attackLPInput.triggered)
@@ -113,12 +117,14 @@ public class PlayerController : MonoBehaviour
                         stateManager.Attacking();
                         animController.JumpAttack();
                         attackManager.JumpAttack();
+                        return;
                     }
                     else
                     {
                         stateManager.Attacking();
                         animController.Attack_LP();
                         attackManager.Attack_LP();
+                        return;
                     }
                 }
                 if (attackMPInput.triggered)
@@ -128,12 +134,14 @@ public class PlayerController : MonoBehaviour
                         stateManager.Attacking();
                         animController.JumpAttack();
                         attackManager.JumpAttack();
+                        return;
                     }
                     else
                     {
                         stateManager.Attacking();
                         animController.Attack_MP();
                         attackManager.Attack_MP();
+                        return;
                     }
                 }
                 if (attackHPInput.triggered)
@@ -143,6 +151,14 @@ public class PlayerController : MonoBehaviour
                         stateManager.Attacking();
                         animController.JumpAttack();
                         attackManager.JumpAttack();
+                        return;
+                    }
+                    else
+                    {
+                        stateManager.Attacking();
+                        animController.Attack_HP();
+                        attackManager.Attack_HP();
+                        return;
                     }
                 }
                 if (parryInput.ReadValue<float>() > 0 && stateManager.isGrounded)
@@ -153,18 +169,18 @@ public class PlayerController : MonoBehaviour
                     return;
                 }
 
-                // 攻撃中でない場合
-                if (!attackMPInput.triggered && !attackMKInput.triggered && !attackLPInput.triggered && !attackLKInput.triggered)
+                // 地上判定
+                if (stateManager.isGrounded)
                 {
                     // ジャンプ
-                    if (stateManager.isGrounded && (input == 7 || input == 8 || input == 9))
+                    if (input == 7 || input == 8 || input == 9)
                     {
                         animController.Jumping();
                         stateManager.Jumping();
                         Jumping(input);
                     }
                     // しゃがみ
-                    else if (stateManager.isGrounded && (input == 1 || input == 2 || input == 3))
+                    else if (input == 1 || input == 2 || input == 3)
                     {
                         if (!stateManager.isCrouching)
                         {
@@ -182,7 +198,7 @@ public class PlayerController : MonoBehaviour
                         Crouching(input);
                     }
                     // 立ち状態
-                    else if (stateManager.isGrounded)
+                    else
                     {
                         // 歩き
                         if (input == 4 || input == 6)

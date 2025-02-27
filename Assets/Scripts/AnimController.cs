@@ -168,6 +168,31 @@ public class AnimController : MonoBehaviour
         currentAnimation = StartCoroutine(ChangeAnimation(playerSprites, framesPerSprite, loop));
     }
 
+    // 強パンチ
+    public void Attack_HP()
+    {
+        // playerSpritesを設定
+        playerSprites = Resources.LoadAll<Sprite>("Sprites/Attack_HP");
+
+        // ループ
+        loop = false;
+
+        // framesPerSpriteを設定
+        framesPerSprite = new int[playerSprites.Length];
+        for (int i = 0; i < playerSprites.Length; i++)
+        {
+            framesPerSprite[i] = jsonData["HP"].transitionFrames;// ここを個別にJSONで指定
+        }
+
+        // アニメーション更新
+        if (currentAnimation != null)
+        {
+            StopCoroutine(currentAnimation);
+        }
+        currentAnimation = StartCoroutine(ChangeAnimation(playerSprites, framesPerSprite, loop));
+        Debug.Log("Started ChangeAnimation Coroutine");
+    }
+
     // 中キック
     public void Attack_MK()
     {
