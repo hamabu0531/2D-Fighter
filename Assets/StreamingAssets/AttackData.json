@@ -20,7 +20,7 @@
             "key": "HP",
             "attackInfo": {
                 "startup": 8,
-                "recovery": 24,
+                "recovery": 26,
                 "transitionFrames": 4
             }
         },

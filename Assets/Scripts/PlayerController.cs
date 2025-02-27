@@ -287,6 +287,7 @@ public class PlayerController : MonoBehaviour
         if (input == 9)
         {
             Rigidbody2D rb = GetComponent<Rigidbody2D>();
+            
             rb.AddForce(new Vector2(5, 20), ForceMode2D.Impulse);
         }
         // 後ろジャンプ
