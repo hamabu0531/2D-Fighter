@@ -1,14 +1,25 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AttackBoxManager : MonoBehaviour
 {
-    public int damage;
+    public string attackName;
+    private int damage;
     private StateManager stateManager1, stateManager2;
+    private JsonDB jsonDB;
+    private Dictionary<string, AttackInfo> attackData;
+
+    public void Awake()
+    {
+        jsonDB = GameObject.Find("JsonDB").GetComponent<JsonDB>();
+    }
 
     public void Start()
     {
         stateManager1 = GameObject.Find("Player1").transform.Find("StateManager").GetComponent<StateManager>();
         stateManager2 = GameObject.Find("Player2").transform.Find("StateManager").GetComponent<StateManager>();
+        attackData = jsonDB.jsonData;
+        damage = attackData[attackName].damage;
     }
     public void OnEnable()
     {

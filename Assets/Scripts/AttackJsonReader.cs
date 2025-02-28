@@ -18,6 +18,8 @@ public class AttackInfoWrapper
 public class AttackInfo
 {
     public int startup;
+    public int active;
     public int recovery;
     public int transitionFrames;
+    public int damage;
 }
